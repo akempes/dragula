@@ -75,6 +75,8 @@ function dragula (initialContainers, options) {
 
     clearGrabDelayTimer();
 
+    touchy(documentElement, 'add', 'mousemove', clearGrabDelayTimer);
+
     _grabDelayTimer = setTimeout(function() {
       grab(e);
     }, o.grabDelay);
@@ -508,6 +510,8 @@ function dragula (initialContainers, options) {
   }
 
   function clearGrabDelayTimer () {
+    touchy(documentElement, 'remove', 'mousemove', clearGrabDelayTimer);
+
     if (_grabDelayTimer) {
       clearTimeout(_grabDelayTimer);
       _grabDelayTimer = null;
