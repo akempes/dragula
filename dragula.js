@@ -26,6 +26,7 @@ function dragula (initialContainers, options) {
   var _lastDropTarget = null; // last container item was over
   var _grabbed; // holds mousedown context until first mousemove
   var _grabDelayTimer;
+  var _isMouse = false;
 
   var o = options || {};
   if (o.moves === void 0) { o.moves = always; }
@@ -119,7 +120,10 @@ function dragula (initialContainers, options) {
     }
     _grabbed = context;
     eventualMovements();
+
+    _isMouse = false;
     if (e.type === 'mousedown') {
+      _isMouse = true;
       if (isInput(item)) { // see also: https://github.com/bevacqua/dragula/issues/208
         item.focus(); // fixes https://github.com/bevacqua/dragula/issues/176
       } else {
@@ -377,6 +381,11 @@ function dragula (initialContainers, options) {
       return;
     }
     e.preventDefault();
+
+    // Only listen to events that belong to the grab event. (Prevent conflict between mousemove and touchmove.)
+    if((_isMouse && e.type.indexOf('mouse') < 0) || (!_isMouse && e.type.indexOf('mouse') > -1)){
+      return;
+    }
 
     var clientX = getCoord('clientX', e);
     var clientY = getCoord('clientY', e);
